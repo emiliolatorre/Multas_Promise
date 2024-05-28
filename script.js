@@ -4,8 +4,7 @@ const sectionBtn = document.querySelector('#sectionBtn');
 const btn = document.querySelector('#btn');
 const tablaMultas = document.querySelector('#tablaMultas');
 const regExp = /^(\d{3})-([A-Z]{2})$/;
-
-let matriculaValidada = []
+const divAvisos = document.querySelector('#sectionBtn div')
 
 const arrayCoches = [
     {
@@ -52,51 +51,50 @@ const arrayMultas = [
         matricula: '576-RD',
         multas: ['multa1'],
     }
-    
-
 ];
 
-// Evento
-btn.addEventListener('click', (event) => {
+btn.addEventListener('click', () => {
+    tablaMultas.innerHTML = '';
     validarMatriculas();
-
 })
 
-// Funciones
+const validarMatriculas = async () => {
+    const matriculaIngresada = sectionBtn.querySelector('input').value;
+    divAvisos.innerHTML = '';
 
-const validarMatriculas = async()=> {
-    const matricula = sectionBtn.querySelector('input').value;
-
-    if (regExp.test(matricula)) {
-        matriculaValidada = arrayCoches.find((elemento) => elemento.matricula === matricula);
+    if (regExp.test(matriculaIngresada)) {
+        const matriculaValidada = arrayCoches.find((obj) => obj.matricula === matriculaIngresada);
         if (matriculaValidada) {
-            getInfoMultas()
-.then((respuesta)=>{console.log(respuesta)})
-.catch((error)=>alert(error))
+            try {
+                await getInfoMultas(matriculaValidada);
+            } catch (error) {
+                alert(error);
+            }
         } else {
-            alert('Este coche no esta registrado en la BBDD.')
+            divAvisos.innerHTML = '<p>Matricula no registrada en BBDD</p>';
         }
     } else {
-        alert('el campo no puede estar vacio.')
-        return
+        divAvisos.innerHTML = '<p>Matricula incorrecta</p>'
     };
 };
 
-const comprobarMulta = async(matriculaValidada) => {
-    const multaEncontrada = arrayMultas.find((elemento) => elemento.matricula === matriculaValidada.matricula);
+const comprobarMulta = async (matriculaValidada) => {
+    const multaEncontrada = arrayMultas.find((obj) => obj.matricula === matriculaValidada.matricula);
     if (multaEncontrada) {
         matriculaValidada.multas = multaEncontrada.multas.length;
         return pintarMultas(matriculaValidada)
-    }else throw('Esta matricula no tiene multas')
+    } else{
+        throw 'Esta matricula no tiene multas';
+    } 
 }
 
-const pintarMultas = (matriculaValidada => {
+const pintarMultas = (matriculaValidada) => {
     tablaMultas.innerHTML = '';
     const trBody = document.createElement('tr');
-    const tdMatricula = document.createElement('tr');
-    const tdModelo = document.createElement('tr');
-    const tdPropietario = document.createElement('tr');
-    const tdMultas = document.createElement('tr');
+    const tdMatricula = document.createElement('td');
+    const tdModelo = document.createElement('td');
+    const tdPropietario = document.createElement('td');
+    const tdMultas = document.createElement('td');
 
     tdMatricula.textContent = matriculaValidada.matricula;
     tdModelo.textContent = matriculaValidada.modelo;
@@ -106,12 +104,12 @@ const pintarMultas = (matriculaValidada => {
     trBody.append(tdMatricula, tdModelo, tdPropietario, tdMultas);
 
     tablaMultas.append(trBody);
-});
+};
 
-const getInfoMultas = async() => {
+const getInfoMultas = async (matriculaValidada) => {
     try {
-        const matricula=await comprobarMulta(matriculaValidada);
+        await comprobarMulta(matriculaValidada);
     } catch (error) {
-        throw error
+        divAvisos.innerHTML = (error)
     }
 }

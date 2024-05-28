@@ -7,16 +7,36 @@
     max-width: 1200px;
     margin: 0 auto;
 }
+#sectionBtn{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+input{
+    width: 100%;
+    text-align: center;
+    height: 30px;
+}
+@media (min-width: 768px) {
+    input{
+        float: right;
+        text-align: left;
+    }
+    #sectionBtn{
+        display: flex;
+        flex-direction: row;
+        align-items: right;
+        justify-content: end;
+        
+    }
+}
 
 h1 {
     text-align: center;
 }
 
-input {
-    padding: 5px 10px;
-    float: right;
-    margin-bottom: 30px;
-}
 
 #btn {
     background-color: blue;
@@ -26,6 +46,12 @@ input {
     border: none;
     border-radius: 5px;
     float: right;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    #btn, input{
+        width: auto;
+    }
 }
 
 #btn:hover {
@@ -43,11 +69,21 @@ table {
 
 tr {
     display: flex;
-    justify-content: space-between;
-}
-
-th, td {
+    flex-direction: column;
     border-top: 1px solid grey;
     border-bottom: 1px solid grey;
-    padding: 5px;
+    padding: 5px; 
+    color: white;
+    background-color: rgb(21, 119, 39);
+}
+@media (min-width: 768px) {
+    tr{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        
+    }
+}
+td{
+ font-size: 20px;
 }
