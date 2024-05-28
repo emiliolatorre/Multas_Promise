@@ -51,8 +51,6 @@ const arrayMultas = [
         matricula: '576-RD',
         multas: ['multa1'],
     }
-    
-
 ];
 
 // EVENTOS
@@ -64,7 +62,6 @@ btn.addEventListener('click', () => {
 })
 
 // Funcion validarMatricula
-
 const validarMatricula=async()=>{
     const matricula = sectionBtn.querySelector('input').value;
         if(regExp.test(matricula)) return matricula
@@ -122,46 +119,3 @@ const getInfoMultado=async()=>{
 	throw error
     }
 }
-
-
-
-
-
-
-
-
-
-// const validarMatriculas = async()=> {
-//     const matricula = sectionBtn.querySelector('input').value;
-
-//     if (regExp.test(matricula)) {
-//         matriculaValidada = arrayCoches.find((elemento) => elemento.matricula === matricula);
-//         if (matriculaValidada) {
-//             getInfoMultas()
-// .then((respuesta)=>{console.log(respuesta)})
-// .catch((error)=>alert(error))
-//         } else {
-//             alert('Este coche no esta registrado en la BBDD.')
-//         }
-//     } else {
-//         alert('el campo no puede estar vacio.')
-//         return
-//     };
-// };
-
-// const comprobarMulta = async(matriculaValidada) => {
-//     const multaEncontrada = arrayMultas.find((elemento) => elemento.matricula === matriculaValidada.matricula);
-//     if (multaEncontrada) {
-//         matriculaValidada.multas = multaEncontrada.multas.length;
-//         return pintarMultas(matriculaValidada)
-//     }else throw('Esta matricula no tiene multas')
-// }
-
-
-// const getInfoMultas = async() => {
-//     try {
-//         const matricula=await comprobarMulta(matriculaValidada);
-//     } catch (error) {
-//         throw error
-//     }
-// }
