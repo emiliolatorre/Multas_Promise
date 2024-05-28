@@ -3,9 +3,8 @@
 const sectionBtn = document.querySelector('#sectionBtn');
 const btn = document.querySelector('#btn');
 const tablaMultas = document.querySelector('#tablaMultas');
+const errores = document.querySelector('#errores')
 const regExp = /^(\d{3})-([A-Z]{2})$/;
-
-let matriculaValidada = []
 
 const arrayCoches = [
     {
@@ -56,62 +55,113 @@ const arrayMultas = [
 
 ];
 
-// Evento
-btn.addEventListener('click', (event) => {
-    validarMatriculas();
-
+// EVENTOS
+btn.addEventListener('click', () => {
+    errores.innerHTML='';
+    getInfoMultado()
+	.then((respuesta)=>{console.log(respuesta)})
+	.catch((error)=>{console.log(error)})
 })
 
-// Funciones
+// Funcion validarMatricula
 
-const validarMatriculas = async()=> {
+const validarMatricula=async()=>{
     const matricula = sectionBtn.querySelector('input').value;
-
-    if (regExp.test(matricula)) {
-        matriculaValidada = arrayCoches.find((elemento) => elemento.matricula === matricula);
-        if (matriculaValidada) {
-            getInfoMultas()
-.then((respuesta)=>{console.log(respuesta)})
-.catch((error)=>alert(error))
-        } else {
-            alert('Este coche no esta registrado en la BBDD.')
-        }
-    } else {
-        alert('el campo no puede estar vacio.')
-        return
-    };
+        if(regExp.test(matricula)) return matricula
+        else throw errores.innerHTML = 'la matrícula debe tener un formato xxx-AB.'
 };
 
-const comprobarMulta = async(matriculaValidada) => {
-    const multaEncontrada = arrayMultas.find((elemento) => elemento.matricula === matriculaValidada.matricula);
-    if (multaEncontrada) {
-        matriculaValidada.multas = multaEncontrada.multas.length;
-        return pintarMultas(matriculaValidada)
-    }else throw('Esta matricula no tiene multas')
-}
+// Funcion validarCoche
+const validarCoche = async(matricula) => {
+    let cocheValidado = arrayCoches.find((elemento) => elemento.matricula === matricula);
+    let arrayFinal = {...cocheValidado}
+    if(cocheValidado) return arrayFinal
+    else throw errores.innerHTML = 'Este coche no esta registrado en la BBDD.'
+};
 
-const pintarMultas = (matriculaValidada => {
+// Función validarMultas
+const validarMultas = async(arrayFinal) => {
+    const multaValidada = arrayMultas.find((elemento) => elemento.matricula === arrayFinal.matricula);
+    if(multaValidada) {
+        arrayFinal.multas = multaValidada.multas.length;
+        return arrayFinal
+    }
+    else throw errores.innerHTML = `El coche con matricula ${arrayFinal.matricula} no tiene multas`
+};
+
+// Función pintarMultas
+const pintarMultas = (arrayFinal => {
     tablaMultas.innerHTML = '';
     const trBody = document.createElement('tr');
-    const tdMatricula = document.createElement('tr');
-    const tdModelo = document.createElement('tr');
-    const tdPropietario = document.createElement('tr');
-    const tdMultas = document.createElement('tr');
+    const tdMatricula = document.createElement('td');
+    const tdModelo = document.createElement('td');
+    const tdPropietario = document.createElement('td');
+    const tdMultas = document.createElement('td');
 
-    tdMatricula.textContent = matriculaValidada.matricula;
-    tdModelo.textContent = matriculaValidada.modelo;
-    tdPropietario.textContent = matriculaValidada.propietario;
-    tdMultas.textContent = matriculaValidada.multas;
+    tdMatricula.textContent = arrayFinal.matricula;
+    tdModelo.textContent = arrayFinal.modelo;
+    tdPropietario.textContent = arrayFinal.propietario;
+    tdMultas.textContent = arrayFinal.multas;
 
     trBody.append(tdMatricula, tdModelo, tdPropietario, tdMultas);
 
     tablaMultas.append(trBody);
 });
 
-const getInfoMultas = async() => {
-    try {
-        const matricula=await comprobarMulta(matriculaValidada);
-    } catch (error) {
-        throw error
+
+// Función madre
+const getInfoMultado=async()=>{
+    try{
+      const matricula = await validarMatricula();
+      const arrayFinal = await validarCoche(matricula);
+      const arrayFinal2 = await validarMultas(arrayFinal);
+
+      return pintarMultas(arrayFinal2);
+
+    }catch(error){
+	throw error
     }
 }
+
+
+
+
+
+
+
+
+
+// const validarMatriculas = async()=> {
+//     const matricula = sectionBtn.querySelector('input').value;
+
+//     if (regExp.test(matricula)) {
+//         matriculaValidada = arrayCoches.find((elemento) => elemento.matricula === matricula);
+//         if (matriculaValidada) {
+//             getInfoMultas()
+// .then((respuesta)=>{console.log(respuesta)})
+// .catch((error)=>alert(error))
+//         } else {
+//             alert('Este coche no esta registrado en la BBDD.')
+//         }
+//     } else {
+//         alert('el campo no puede estar vacio.')
+//         return
+//     };
+// };
+
+// const comprobarMulta = async(matriculaValidada) => {
+//     const multaEncontrada = arrayMultas.find((elemento) => elemento.matricula === matriculaValidada.matricula);
+//     if (multaEncontrada) {
+//         matriculaValidada.multas = multaEncontrada.multas.length;
+//         return pintarMultas(matriculaValidada)
+//     }else throw('Esta matricula no tiene multas')
+// }
+
+
+// const getInfoMultas = async() => {
+//     try {
+//         const matricula=await comprobarMulta(matriculaValidada);
+//     } catch (error) {
+//         throw error
+//     }
+// }
