@@ -116,6 +116,6 @@ const getInfoMultado=async()=>{
       pintarMultas(arrayFinal2);
 
     }catch(error){
-	error // aqui habria que dejar el tableBody.innerHTML='';
+	error
     }
 };
