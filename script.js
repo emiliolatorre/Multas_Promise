@@ -56,10 +56,11 @@ const arrayMultas = [
 // EVENTOS
 btn.addEventListener('click', () => {
     errores.innerHTML='';
+    tablaMultas.innerHTML = '';
     getInfoMultado()
-	.then((respuesta)=>{console.log(respuesta)})
-	.catch((error)=>{console.log(error)})
-})
+	// .then((respuesta)=>{console.log(respuesta)})
+	// .catch((error)=>{console.log(error)})
+});
 
 // Funcion validarMatricula
 const validarMatricula=async()=>{
@@ -88,7 +89,6 @@ const validarMultas = async(arrayFinal) => {
 
 // Función pintarMultas
 const pintarMultas = (arrayFinal => {
-    tablaMultas.innerHTML = '';
     const trBody = document.createElement('tr');
     const tdMatricula = document.createElement('td');
     const tdModelo = document.createElement('td');
@@ -113,9 +113,9 @@ const getInfoMultado=async()=>{
       const arrayFinal = await validarCoche(matricula);
       const arrayFinal2 = await validarMultas(arrayFinal);
 
-      return pintarMultas(arrayFinal2);
+      pintarMultas(arrayFinal2);
 
     }catch(error){
-	throw error
+	error // aqui habria que dejar el tableBody.innerHTML='';
     }
-}
+};
